@@ -1,0 +1,381 @@
+<!doctype html>
+<html>
+	<head>
+		<title>learningthree.js boiler plate for three.js</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
+			
+		<!--<script src="src/lib/three.js/Three.js"></script>-->
+		<script src="src/lib/three.js/Detector.js"></script>
+                <script src="src/lib/three.js/three.min.js"></script>
+		<!-- https://github.com/mrdoob/stats.js -->
+		<script src="src/lib/three.js/Stats.js"></script>
+                <script src="src/lib/orbitControls.js"></script>
+		<script src="src/lib/threex/THREEx.screenshot.js"></script>
+		<script src="src/lib/threex/THREEx.FullScreen.js"></script>
+		<script src="src/lib/threex/THREEx.WindowResize.js"></script>
+                <script src="src/lib/TweenJS/_assets/libs/easeljs-NEXT.min.js"></script>
+                <script src="src/lib/TweenJS/lib/tweenjs-NEXT.combined.js"></script>
+                
+		<script src="src/lib/threex.dragpancontrols.js"></script>                                              
+                                <script src="src/js/exterieurMove.js"></script>
+<!-- load fonts -->
+<script src="src/fonts/gentilis_bold.typeface.js"></script>
+<script src="src/fonts/gentilis_regular.typeface.js"></script>
+<script src="src/fonts/optimer_bold.typeface.js"></script>
+<script src="src/fonts/optimer_regular.typeface.js"></script>
+<script src="src/fonts/helvetiker_bold.typeface.js"></script>
+
+                <script src="src/js/defense.js"></script>
+                <script src="src/js/sol.js"></script>
+                <script src="src/js/invaders.js"></script>
+                <script src="src/js/balle.js"></script>
+                <script src="src/js/balleJoueur.js"></script>
+                <script src="src/js/balleEnnemi.js"></script>
+                <script src="src/js/joueur.js"></script>
+                <script src="src/js/hitBoxPlayer.js"></script>
+                <script src="src/js/ennemi.js"></script>
+                <script src="src/js/rangesAliens.js"></script>
+                <script src="src/js/groupAlien.js"></script>
+                <script src="src/js/hitBox.js"></script>
+                <script src="src/js/rangesHitBox.js"></script>
+                <script src="src/js/groupHitBox.js"></script>
+                <script src="src/js/environnement.js"></script>
+                <script src="src/js/vaisseau.js"></script>
+                <script src="src/js/accueil.js"></script>
+
+                
+		<link  href="src/css/main.css" rel="stylesheet"/>
+	</head>
+<body>
+	<!-- three.js container -->
+        <div id="container">
+            <!--<div id="divCanvas">
+                <script>document.write('<canvas width="'+window.innerWidt+'" height="'+window.innerHeight+'" id="gipCanvas"></canvas>')</script>
+            </div>-->
+            <div id="continuer"></div><div id="infoJeu"></div>
+        </div>
+
+	<!-- info on screen display -->
+	<div id="info">
+		<div class="top">
+			<a href="http://learningthreejs.com/blog/2011/12/20/boilerplate-for-three-js/" target="_blank">LearningThree.js</a>
+			boiler plate for
+			<a href="https://github.com/mrdoob/three.js/" target="_blank">three.js</a>
+		</div>
+		<div class="bottom" id="inlineDoc" >
+			- <i>p</i> for screenshot
+		</div> 
+	</div> 
+
+	<script type="text/javascript">
+		var stats, env, renderer, niveauCourant,indiceNiveauCourant;
+                var niveaux= new Array();
+                // custom global variables
+                var targetList = [];
+                var targetContinuer = [];
+                var targetRecommencer =[];
+                var targetNextlvl = [];
+                
+                document.addEventListener( 'mousedown', onDocumentMouseDown, false );
+
+                
+                var mouse = { x: 0, y: 0 };
+                niveaux.push({0:3,1:4,2:1,3:1,4:200});
+                niveaux.push({0:5,1:4,2:2,3:3,4:100});
+                niveaux.push({0:8,1:4,2:3,3:5,4:50});
+
+                var cameras= new Array();
+                cameras.push({"position" : new THREE.Vector3(0,60,200), "lookat" : new THREE.Vector3(0,0,-450)});
+                cameras.push({"position" : new THREE.Vector3(0,600,40), "lookat" : new THREE.Vector3(0,0,-40)});
+                cameras.push({"position" : new THREE.Vector3(-150,60,200), "lookat" : new THREE.Vector3(0,0,-400)});
+                cameras.push({"position" : new THREE.Vector3(0,3,85), "lookat" : new THREE.Vector3(0,0,0)});
+                indiceNiveauCourant = 0;
+                indiceCameraCourant = 1;
+                 
+                
+                if( !init() )	{debuter();
+                                    targetList.push(env.commencer);
+                }
+		// init the scene
+
+                function init(){
+                    
+                        if( Detector.webgl ){
+                                renderer = new THREE.WebGLRenderer({
+                                        antialias		: true,	// to get smoother output
+                                        preserveDrawingBuffer	: true	// to allow screenshot
+                                });
+                        }else{
+                                Detector.addGetWebGLMessage();
+                                return true;
+                        }
+                        renderer.setSize( window.innerWidth, window.innerHeight );
+                        document.getElementById('container').appendChild(renderer.domElement);
+
+
+
+			// create a scene
+			//scene = new THREE.Scene();
+                        niveauCourant = niveaux[indiceNiveauCourant];
+                        env = new environnement(niveauCourant[0],niveauCourant[1],niveauCourant[2],niveauCourant[3],niveauCourant[4]);
+                        document.getElementById("infoJeu").innerHTML="";
+                        for(var i = 0 ; i < env.nbDeVie ; i++)
+                            document.getElementById("infoJeu").innerHTML+="<img src='src/medias/images/vie.png' width='20%'/>";
+                 
+                        env.init();
+                        			// transparently support window resize
+			THREEx.WindowResize.bind(renderer, env.camera);
+			// allow 'p' to make screenshot
+			THREEx.Screenshot.bindKey(renderer);
+			// allow 'f' to go fullscreen where this feature is supported
+			if( THREEx.FullScreen.available() ){
+				THREEx.FullScreen.bindKey();		
+				document.getElementById('inlineDoc').innerHTML	+= " - <i>f</i> for fullscreen";
+			}
+
+                }
+		// animation loop
+		function animate() {
+
+			// loop on request animation loop
+			// - it has to be at the begining of the function
+			// - see details at http://my.opera.com/emoller/blog/2011/12/20/requestanimationframe-for-smart-er-animating
+                        if(env.enCours || env.aliens.balles.children.length!=0){
+                            requestAnimationFrame( animate );
+                            //renderTween();
+                            // do the render
+
+                            render();
+                        }
+			// update stats
+			stats.update();
+		}
+
+		// render the scene
+		function render() {
+                    if(env.enCours){
+
+                        env.action1();
+                        env.moveSol();
+                        env.moveEnv();
+                        env.mouvementEnnemi();            
+                        env.player.moveLeft();
+                        env.player.moveRight();
+                        env.hitBoxPlayer.moveLeft();
+                        env.hitBoxPlayer.moveRight();
+			// update camera controls
+			//env.cameraControls.update();
+
+                        env.aliens.tir();
+                        env.detecteEnnemi();                
+                        if(env.aliens.children.length-1 <= 0){
+                            env.enCours = false;
+                            env.gagner();
+                            if(indiceNiveauCourant < niveaux.length - 1 ){
+                                targetNextlvl.push(env.textcontinuer1);
+                            }
+                        }
+                        if(indiceCameraCourant==3){
+                            env.camera.position.x = env.player.position.x+6;
+                        }
+                        env.moveBalleJoueur();
+                    }
+                    
+                    if(env.enCours || env.aliens.balles.length!=0){
+                        
+                        if(!env.moveBalleEnnemi()){
+                            
+                            if(env.nbDeVie > 0){
+                                env.toucher();
+                                targetContinuer.push(env.textcontinuer);
+                                targetRecommencer.push(env.textrecommencer);
+                            }
+                            else
+                                document.getElementById("continuer").innerHTML="<h1>Perdu ! Vies épuisées</h1>";
+                            
+                        } 
+                    }
+                        
+                    
+			// actually render the scene
+		    renderer.render( env, env.camera );
+
+                }
+                
+                
+                function nextLevel(){
+                    indiceNiveauCourant++;
+                    document.getElementById("continuer").innerHTML="";
+                    document.getElementById("continuer").style.background = "none";
+                    document.getElementById("container").removeChild(renderer.domElement);
+                    document.getElementById('inlineDoc').innerHTML	=" - <i>p</i> for screenshot";
+                    delete env;
+                    init();
+                    env.enCours = true;
+                    animate(); 
+                }
+                
+                document.onkeydown = handleKeyDown;
+                document.onkeyup = handleKeyUp;
+                function handleKeyUp(event){
+                    switch(event.keyCode){
+                        case 37:
+                            env.player.move("left",false);
+                            env.hitBoxPlayer.move("left",false);
+                            break;
+                        case 39:
+                            env.player.move("right",false);
+                            env.hitBoxPlayer.move("right",false);
+                            break;
+                    }
+
+                }
+                function handleKeyDown(event) {
+                    switch(event.keyCode){
+                        case 37:
+                            env.player.move("left",true);
+                            env.hitBoxPlayer.move("left",true);
+                            break;
+                        case 39:
+                            env.player.move("right",true);
+                            env.hitBoxPlayer.move("right",true);
+                            break;
+                        case 32:
+                            if(env.enCours){
+                                if(env.player.uneBalle==undefined){
+                                    env.add(env.player.tir());
+                                }  
+                            }
+                            break;
+                        case 38:
+                            //camera
+                            break;
+                        case 75:
+                            if(env.enCours){
+                                while(env.aliens.children.length > 0){
+                                    env.aliens.remove(env.aliens.children[env.aliens.children.length-1]);
+                                }
+                                while(env.aliensForme.children.length > 0){
+                                    env.aliensForme.remove(env.aliensForme.children[env.aliensForme.children.length-1]);
+                                }
+                                env.remove(env.aliens);
+                                env.remove(env.aliensForme);
+                                console.log("aliens ",env.aliens.children.length);
+                            console.log("aliensForme ",env.aliensForme.children.length);
+                            }
+                            break;
+                        case 48 : //touche 0
+                            indiceCameraCourant = 0;
+                            replaceCamera()
+                            break;
+                        case 49 : //touche 1
+                            indiceCameraCourant = 1;
+                            replaceCamera()
+                            break;
+                        case 50 : //touche 2
+                            indiceCameraCourant = 2;
+                            replaceCamera()
+                            break;
+                        case 51 : //touche 3
+                            indiceCameraCourant = 3;
+                            replaceCamera();
+                            break;
+                    }
+                }
+                
+                function onDocumentMouseDown( event ){	
+	console.log("Click.");
+	
+	// update the mouse variable
+	mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+	mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+	
+	// find intersections
+
+	// create a Ray with origin at the mouse position
+	//   and direction into the scene (camera direction)
+	var vector = new THREE.Vector3( mouse.x, mouse.y, 1 );
+        vector.unproject(env.camera);
+	var ray = new THREE.Raycaster( env.camera.position, vector.sub( env.camera.position ).normalize() );
+
+	// create an array containing all objects in the scene with which the ray intersects
+	var intersects = ray.intersectObjects( targetList );
+        var intersects1 = ray.intersectObjects(targetContinuer);
+        var intersects2 = ray.intersectObjects(targetRecommencer);
+	var intersects3 = ray.intersectObjects(targetNextlvl);
+        
+	// if there is one (or more) intersections
+	if ( intersects.length > 0 )
+        {
+		console.log("Hit @ " + toString( intersects[0].point ) );
+                env.enCours = true;
+                animate();
+                env.finlancement();
+	}
+        //Toucher 
+        if ( intersects1.length > 0 )
+        {
+		console.log("Hit @ " + toString( intersects1[0].point ) );
+                 env.nbDeVie--;
+                    document.getElementById("infoJeu").innerHTML="";
+                    for(var i = 0 ; i < env.nbDeVie ; i++)
+                        document.getElementById("infoJeu").innerHTML+="<img src='src/medias/images/vie.png' width='20%'/>";
+                    env.enCours = true;
+                    animate();
+                    env.fintoucher();
+
+	}
+        //RECOMMENCER 
+        if ( intersects2.length > 0 )
+        {
+		console.log("Hit @ " + toString( intersects2[0].point ) );
+                    env.reinit();
+                    env.enCours = true;
+                    animate();
+                    env.fintoucher();
+
+
+	}
+        //NVEAU SUIVANT
+        if ( intersects3.length > 0 )
+        {
+		console.log("Hit @ " + toString( intersects3[0].point ) );
+                indiceNiveauCourant++;
+                    env.reinit();
+                    env.enCours = true;
+                    animate();
+                    env.fingagner();
+
+
+	}
+
+
+}
+                var cam;
+                function replaceCamera(){
+                    cam = new createjs.Stage(renderer.domElement);
+                    cam.x = env.camera.position.x;
+                    cam.y = env.camera.position.y;
+                    cam.z = env.camera.position.z;
+                    cam.t = cameras[indiceCameraCourant]["lookat"].z
+                    createjs.Tween.get(cam).to({t : cameras[indiceCameraCourant]["lookat"].z,x : cameras[indiceCameraCourant]["position"].x, y : cameras[indiceCameraCourant]["position"].y, z:cameras[indiceCameraCourant]["position"].z}, 2000).call(handlePositionneCameraFin).addEventListener("change", handlePositionneCamera);                    
+                }
+                function handlePositionneCamera(event) {
+                    env.camera.position.x = cam.x;
+                    env.camera.position.y = cam.y;
+                    env.camera.position.z = cam.z;
+                    env.camera.lookAt({x :0,y :0,z :cam.t });
+                    renderer.render( env, env.camera );
+               }
+                function handlePositionneCameraFin(event) {
+                    env.camera.position.x = cameras[indiceCameraCourant]["position"].x; 
+                    env.camera.position.y = cameras[indiceCameraCourant]["position"].y; 
+                    env.camera.position.z = cameras[indiceCameraCourant]["position"].z; 
+                    env.camera.lookAt(cameras[indiceCameraCourant]["lookat"]); 
+               }
+
+	</script>
+</body>
+</html>
