@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+
+    <title>Projet - Space Invaders 3D by Lensorseul</title>
+  </head>
+
+  <body>
+
+    <header>
+      <div class="container">
+        <h1>Projet - Space Invaders 3D</h1>
+        <h2>Projet de Synthèse d&#39;Images - Berger Sébastien - Toulouze Franck</h2>
+
+        <section id="downloads">
+          <a href="https://github.com/Lensorseul/SpaceInvaders/zipball/master" class="btn">Download as .zip</a>
+          <a href="https://github.com/Lensorseul/SpaceInvaders/tarball/master" class="btn">Download as .tar.gz</a>
+          <a href="https://github.com/Lensorseul/SpaceInvaders" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
+        </section>
+      </div>
+    </header>
+
+    <div class="container">
+      <section id="main_content">
+        <h1>
+<a id="introduction" class="anchor" href="#introduction" aria-hidden="true"><span class="octicon octicon-link"></span></a>Introduction</h1>
+
+<p>Ce projet consiste a développer un clone 3D du jeu Space Invaders. Le jeu devra tourner dans un navigateur Web et sera constitué de primitives graphiques 3D animées. La principale contrainte logicielle est de s'appuyer sur la bibliothèque Three.js. Pour notre jeu nous avons décider de rester dans l'univers rétro du jeu de base.</p>
+
+<h1>
+<a id="déroulement-du-jeu" class="anchor" href="#d%C3%A9roulement-du-jeu" aria-hidden="true"><span class="octicon octicon-link"></span></a>Déroulement du jeu</h1>
+
+<p>Au lancement du jeu la caméra se situe loin au dessus du plateau de jeu puis la caméra se déplace au niveau du plateau. A ce moment là, un simple click sur le texte 3D permet de lancer la partie. Le joueur peut se déplacer sur la droite ou la gauche à l'aide des flèches directionnelles et tirer avec la touche espace. Les alliens pendant ce temps se rapproche inexorablement vers le joueur en essayant de lui tirer dessus. Le jeu comporte 3 niveaux qui deviennent de plus en plus difficile(la vitesse de déplacement, le nombre de tir et le nombre d'alliens augmentent avec ces niveaux.</p>
+
+<h1>
+<a id="technologie-utilisé" class="anchor" href="#technologie-utilis%C3%A9" aria-hidden="true"><span class="octicon octicon-link"></span></a>Technologie utilisé</h1>
+
+<p>Pour ce projet nous avons décidé d'utiliser le paradigme de programmation orienté objet qui permet d'avoir une plus grande flexibilité et maintenabilité du code. De ce fait nous avons chercher ce qui était possible de faire avec JavaScript. La programmation orientée prototype est un style de programmation orientée objet qui n'utilise pas les classes. La réutilisation des propriétés d'un objet (appelée héritage pour les langages à classe) est effectuée via des objets qui seront des prototypes pour d'autres objets. </p>
+
+<h1>
+<a id="les-classes" class="anchor" href="#les-classes" aria-hidden="true"><span class="octicon octicon-link"></span></a>Les classes</h1>
+
+<h2>
+<a id="lenvironnement" class="anchor" href="#lenvironnement" aria-hidden="true"><span class="octicon octicon-link"></span></a>L’environnement</h2>
+
+<h2>
+<a id="les-objets-de-la-scène" class="anchor" href="#les-objets-de-la-sc%C3%A8ne" aria-hidden="true"><span class="octicon octicon-link"></span></a>Les objets de la scène</h2>
+
+<p>Tous les objets de la scène(vaisseau, invaders, défense, ...) sont construit de la même façon. Ils héritent de THREE.Group  et sont construit par rapport a une matrice. Les objets sont constituer de cubes unitaires et sont fusionnés pour formés un unique "cubes" mise a part les défense car il faut pouvoir matérialiser les dégâts des balle sur elles.</p>
+
+<h1>
+<a id="les-choix-dimplémentation" class="anchor" href="#les-choix-dimpl%C3%A9mentation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Les choix d'implémentation</h1>
+
+<h2>
+<a id="dialogues-avec-lutilisateur" class="anchor" href="#dialogues-avec-lutilisateur" aria-hidden="true"><span class="octicon octicon-link"></span></a>Dialogues avec l'utilisateur</h2>
+
+<p>L'utilisateur doit pouvoir interagir avec le jeu, pour cela nous avons décidé de mettre des texte en 3D directement dans la scène. Pour que cela puisse fonctionner il a fallu utiliser des Raycaster pour pouvoir vérifier si l'utilisateur click bien sur un texte ou pas. </p>
+
+<h2>
+<a id="points-de-vue-caméra" class="anchor" href="#points-de-vue-cam%C3%A9ra" aria-hidden="true"><span class="octicon octicon-link"></span></a>Points de vue caméra</h2>
+
+<p>L'utilisateur à plusieurs choix de caméra possible. Pour une question d'esthétique les mouvements de changements de caméra sont associés avec TWEEN qui permet de faire des mouvement fluide.</p>
+
+<h2>
+<a id="collisions" class="anchor" href="#collisions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Collisions</h2>
+
+<p>Les balles du joueurs disparaissent lorsqu'elles arrivent trop loin dans la scène ou qu'elles touchent soit un ennemi ou une défense. S'il s'agit d'un ennemi alors on l'envoi dans le score et on le fait disparaître à l'aide d'un TWEEN et s'il s'agit d'une défense alors on casse la défense. De même pour les balles des ennemis.</p>
+
+<h2>
+<a id="intelligence-artificielle-de-ladversaire" class="anchor" href="#intelligence-artificielle-de-ladversaire" aria-hidden="true"><span class="octicon octicon-link"></span></a>Intelligence artificielle de l'adversaire</h2>
+
+<p>Au niveau 3 nous avons décidé de créer un vaisseau mère placé derrière les ennemis et qui tire sur le joueur mais que le joueur ne peut pas tuer. Ce vaisseau tire aléatoirement sur la position du joueur ce qui implique que le joueur ne peut pas rester longtemps immobile.</p>
+
+<h2>
+<a id="musique-et-sons" class="anchor" href="#musique-et-sons" aria-hidden="true"><span class="octicon octicon-link"></span></a>Musique et sons</h2>
+
+<p>Le jeu comporte une musique d'ambiance et des effets lorsqu'on change de niveau, perde, tire, active le bouclier d'invincibilité, les ennemis tire ou qu'on perde.</p>
+
+<h2>
+<a id="triche" class="anchor" href="#triche" aria-hidden="true"><span class="octicon octicon-link"></span></a>Triche</h2>
+
+<p>Touche 'i' : mode invincible. Les méchants aliens ne se rapprochent plus et leurs missiles ne peuvent plus rien contre le gentil vaisseau. Nous activons de ce fait un bouclier tout autour du vaisseau et le faisons exploser lorsqu'on le désactive à l'aide d'un TWEEN.</p>
+
+<p>Touche 'k' : kill les tous ! L'appui sur 'k' produit le même effet que si tous les aliens venaient d'être touché par un gentil missile. Cela nous permet de passer plus facilement au niveau suivant. Par contre aucun point n'est gagné par l'intermédiaire par cette honteuse feinte.</p>
+
+<h2>
+<a id="les-plus" class="anchor" href="#les-plus" aria-hidden="true"><span class="octicon octicon-link"></span></a>Les plus</h2>
+
+<p>Si t'en vois ^^</p>
+
+<h1>
+<a id="les-librairies" class="anchor" href="#les-librairies" aria-hidden="true"><span class="octicon octicon-link"></span></a>Les librairies</h1>
+
+<ul>
+<li>Tween.js : Permet de faire des mouvements fluides </li>
+<li>Threex.js : Librairie dédiée au jeu avec Thee.js</li>
+<li>Buzz.js ; Facilite l'ajout et la gestion de la musique</li>
+<li>Librairie de postprocessing et shaders : Permet de changer l'état de la caméra avec plusieurs effets possible</li>
+</ul>
+
+<h1>
+<a id="conclusion" class="anchor" href="#conclusion" aria-hidden="true"><span class="octicon octicon-link"></span></a>Conclusion</h1>
+      </section>
+    </div>
+
+    
+  </body>
+</html>
