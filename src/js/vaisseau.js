@@ -55,6 +55,10 @@ function vaisseau(mat){
 	}
         this.add(new THREE.Mesh(geo,this.shipmaterial));
 	this.rotation.z=270*(3.1415/180);
+        this.scale.set(2,2,2);
+        this.position.x-=6;
+        this.position.y+=6;
+        this.position.z+=8;
 	
 }
 

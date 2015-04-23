@@ -38,12 +38,12 @@ function debuter(){
 function handleComplete() {
    
     indiceCameraCourant=0;
+    document.getElementById("popHelp").style.display = "block";
 }
  function handleChange(event) {
     bitmap.x += 10;
     bitmap.y += 10;
     bitmap.z += 10;
-    document.getElementById("continuer").style.opacity = logo.alpha;
     renderer.render( env, env.camera );
 
  }
@@ -61,8 +61,8 @@ function handleComplete() {
  }
 
 function commencer(){
-    document.getElementById("continuer").style.background = "none";
-    document.getElementById("continuer").innerHTML="";
+    document.getElementById("popHelp").style.display = "none";
+    document.getElementById("popHelp").style.marginTop = "";
     env.enCours = true;
     animate();
 }

@@ -12,7 +12,8 @@ rangesHitBox.prototype.print = function() {
 rangesHitBox.prototype.remplirAliens = function(nbA, px){
     for(var i = 0; i < nbA ; i++){
         var alien = new hitBox();
-        alien.position.x  = px-40 ;
+        alien.scale.set(2,2,2);
+        alien.position.x  = (px*2)+2 ;
         alien.position.z  = -i*20-45 ;
         alien.position.y  = 3 ;
         alien.uuid=i;

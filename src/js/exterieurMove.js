@@ -1,7 +1,7 @@
 
 function exterieurMove(){
 	THREE.Group.call(this);
-            this.invader1_mlm = new THREE.MeshLambertMaterial({color:  0x00FFFF});
+            this.invader1_mlm = new THREE.MeshPhongMaterial({color:  0x00FFFF});
 
         this.vaisseauP = new vaisseau(ship_data,this.invader1_mlm);
         this.enemyP = new invader(invader5_data);
@@ -14,7 +14,7 @@ function exterieurMove(){
         this.enemyP.rotation.z=90*(3.1415/180);
         this.enemyP.position.y=-10;
         this.enemyP.position.x=15;
-
+        this.vaisseauP.scale.set(1,1,1);
         this.add(this.vaisseauP);
         this.add(this.enemyP);
 }

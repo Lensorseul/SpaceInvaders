@@ -1,6 +1,6 @@
 function balleJoueur(v,d) {
-    this.materiel = new THREE.MeshBasicMaterial({color:  0xFFFFFF});
-    this.geometrie = new THREE.SphereGeometry( 1, 5, 5 );
+    this.materiel = new THREE.MeshBasicMaterial({color:  0xFF0000});
+    this.geometrie = new THREE.SphereGeometry( 2, 5, 5 );
     balle.call(this,v,d,this.geometrie,this.materiel);
     this.raycaster = new THREE.Raycaster();
 }
